@@ -1,61 +1,65 @@
 /********************************************************************************
-* WEB322 – Assignment 03
+* WEB322 – Assignment 04
 * 
 * I declare that this assignment is my own work in accordance with Seneca's
 * Academic Integrity Policy:
 * 
 * https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
 * 
-* Name: Yoojin Lee     Student ID: 188162218     Date: October 12, 2023
+* Name: Yoojin Lee     Student ID: 188162218     Date: November, 3, 2023
 *
 ********************************************************************************/
 const express = require('express');
+const path = require("path");
+
 const legoData = require('./modules/legoSets');
 
 const app = express();
-const port = 3000;
+
+const PORT = process.env.PORT || 8080;
+
+// set EJS engine
+app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-legoData.initialize().then(() => {
     
-    // Home Route
-    app.get('/', (req, res) => {
-        res.sendFile(__dirname + '/views/home.html');
-    });
+// Home Route
+app.get('/', (req, res) => {
+    res.render("home");
+});
 
-    // About Route
-    app.get('/about', (req, res) => {
-        res.sendFile(__dirname + '/views/about.html');
-    });
+// About Route
+app.get('/about', (req, res) => {
+    res.render("about");
+});
 
-    // Lego Sets with optional Theme Parameter
-    app.get('/lego/sets', (req, res) => {
-        if (req.query.theme) {
-            legoData.getSetsByTheme(req.query.theme)
-                .then(sets => res.send(sets))
-                .catch(error => res.status(404).sendFile(__dirname + '/views/404.html'));
-        } else {
-            legoData.getAllSets()
-                .then(data => res.send(data))
-                .catch(error => res.status(404).sendFile(__dirname + '/views/404.html'));
-        }
-    });
 
-    // Lego Sets by Set Number
-    app.get('/lego/sets/:set_num', (req, res) => {
-        legoData.getSetByNum(req.params.set_num)
-            .then(set => res.send(set))
-            .catch(error => res.status(404).sendFile(__dirname + '/views/404.html'));
-    });
+app.get('/lego/sets', (req, res) => {
+    if (req.query.theme) {
+        legoData.getSetsByTheme(req.query.theme)
+            .then(sets => res.render("sets", { sets }))
+            .catch(error => res.status(404).render('404', { message: "No Sets found for a matching theme" }));
+    } else {
+        legoData.getAllSets()
+            .then(sets => res.render("sets", { sets }))
+            .catch(error => res.status(404).render('404', { message: "I'm sorry, we're unable to find what you're looking for" }));
+    }
+});
 
-    // Custom 404 Error
-    app.use((req, res) => {
-        res.status(404).sendFile(__dirname + '/views/404.html');
-    });
 
-    // Start the server
-    app.listen(port, () => {
-        console.log(`Server is running at http://localhost:${port}`);
-    });
+app.get('/lego/sets/:set_num', (req, res) => {
+    legoData.getSetByNum(req.params.set_num)
+    .then(set => res.render("set", { set }))
+    .catch(error => res.status(404).render('404', { message: "No Sets found for a specific set num" }));
+});
 
-}).catch(error => console.error('Initialization failed:', error));
+
+app.use((req, res) => {
+    res.status(404).render('404', { message: "No view matched for a specific route" });
+});
+
+
+legoData
+  .initialize()
+  .then(() => app.listen(PORT, () => console.log(`listening on port ${PORT}`)))
+  .catch((error) => console.log(`Failed to listen on port ${PORT}`));
