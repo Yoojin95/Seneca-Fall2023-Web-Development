@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="valentine">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css" />
+    <title>Register</title>
+</head>
+<body tabindex="-1">
+    <%- include('partials/navbar', {page: '/register'}) %>
+
+    <div class="container mx-auto p-4">
+        <div class="flex items-center justify-center min-h-screen bg-gray-100">
+            <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">
+                <% if (typeof successMessage !== 'undefined') { %>
+                    <h3 class="text-2xl font-bold text-center">Account Created Successfully!</h3>
+                    <p class="mt-2 text-center">Your account has been created. You can now log in.</p>
+                    <div class="text-center mt-4">
+                        <a href="/login" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Proceed to Log in</a>
+                    </div>
+                <% } else { %>
+                    <h3 class="text-2xl font-bold text-center">Create Your Account</h3>
+                    <% if (errorMessage) { %>
+                        <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">Error:</strong>
+                            <span class="block sm:inline"><%= errorMessage %></span>
+                        </div>
+                    <% } %>
+                    <form method="post" action="/register" class="mt-4">
+                        <div>
+                            <label class="block" for="userName">Username</label>
+                            <input type="text" placeholder="Username" id="userName" name="userName"
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                                value="<%= typeof userName !== 'undefined' ? userName : '' %>">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block">Password</label>
+                            <input type="password" placeholder="Password" id="password" name="password"
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block">Confirm Password</label>
+                            <input type="password" placeholder="Confirm Password" id="password2" name="password2"
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block">Email Address</label>
+                            <input type="email" placeholder="Email Address" id="email" name="email"
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                        </div>
+                        <div class="flex items-baseline justify-between">
+                            <button class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Register</button>
+                            <a href="/login" class="text-sm text-blue-600 hover:underline">Already have an account?</a>
+                        </div>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

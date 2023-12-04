@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="pastel">
 
 <head>
   <meta charset="UTF-8">
@@ -54,9 +54,12 @@
 
         <span id="quote"></span>
         <br /><br />
-        <a class="btn btn-success btn-sm" href="/lego/editSet/<%= set.set_num %>">Edit Set: <%= set.name %></a>
-        
+        <div class="flex gap-4">
+          <% if (session && session.user) { %>
+          <a class="btn btn-success btn-sm" href="/lego/editSet/<%= set.set_num %>">Edit Set: <%= set.name %></a>
+            <% } %>
         <a class="btn btn-primary btn-sm" href="#" onclick="history.back(); return false;">RETURN</a>
+      </div>
        </p>
 
       </div>
